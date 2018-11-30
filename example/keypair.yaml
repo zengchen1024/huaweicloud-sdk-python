@@ -1,0 +1,317 @@
+swagger: '2.0'
+info:
+  description: >-
+    This is a sample server Petstore server.  You can find out more about
+    Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net,
+    #swagger](http://swagger.io/irc/).      For this sample, you can use the api
+    key `special-key` to test the authorization     filters.
+  version: 1.0.0
+  title: compute
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: compute
+basePath: /
+tags:
+  - name: keypair
+    description: Everything about your keypair
+    externalDocs:
+      description: Find out more
+      url: 'http://swagger.io'
+schemes:
+  - https
+  - http
+paths:
+  /v2/{project_id}/os-keypairs:
+    post:
+      tags:
+        - keypair
+      summary: Add a new keypair
+      description: ''
+      operationId: createKeyPair
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: path
+          name: project_id
+          description: project id
+          required: true
+          type: string
+        - in: body
+          name: keypair
+          description: the request parameters to create keypair
+          required: true
+          schema:
+            $ref: '#/definitions/CreateKeyPairReq'
+      responses:
+        '201':
+          description: create keypair successfully
+          schema:
+            $ref: '#/definitions/CreateKeyPairResp'
+        200:
+          description: create keypair successfully
+          schema:
+            $ref: '#/definitions/CreateKeyPairResp'
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+    get:
+      tags:
+        - keypair
+      summary: list keypairs
+      description: list keypairs
+      operationId: listKeyPair
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: path
+          name: project_id
+          description: project id
+          required: true
+          type: string
+        - name: user_id
+          in: query
+          description: This allows administrative users to operate key-pairs of specified user ID.
+          type: string
+        - name: limit
+          in: query
+          description: Requests a page size of items.
+          type: integer
+          format: int32
+        - name: marker
+          in: query
+          description: The last-seen item.
+          type: string
+      responses:
+        '200':
+          description: list keypair successfully
+          schema:
+            $ref: '#/definitions/ListKeyPairResp'
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+  /v2/{project_id}/os-keypairs/{keypair_name}:
+    get:
+      tags:
+        - keypair
+      summary: get a keypair
+      description: get a keypair
+      operationId: getKeyPair
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: path
+          name: project_id
+          description: project id
+          required: true
+          type: string
+        - in: path
+          name: keypair_name
+          description: The keypair name.
+          required: true
+          type: string
+        - name: user_id
+          in: query
+          description: This allows administrative users to operate key-pairs of specified user ID.
+          type: string
+      responses:
+        '200':
+          description: get a keypair successfully
+          schema:
+            $ref: '#/definitions/GetKeyPairResp'
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+    delete:
+      tags:
+        - keypair
+      summary: delete a keypair
+      description: delete a keypair
+      operationId: deleteKeyPair
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: path
+          name: project_id
+          description: project id
+          required: true
+          type: string
+        - in: path
+          name: keypair_name
+          description: The keypair name.
+          required: true
+          type: string
+        - name: user_id
+          in: query
+          description: This allows administrative users to operate key-pairs of specified user ID.
+          type: string
+      responses:
+        '202':
+          description: delete keypair successfully
+        '204':
+          description: delete keypair successfully
+        '404':
+          description: keypair not found
+      security:
+        - api_key: []
+securityDefinitions:
+  petstore_auth:
+    type: oauth2
+    authorizationUrl: 'http://petstore.swagger.io/oauth/dialog'
+    flow: implicit
+    scopes:
+      'write:pets': modify pets in your account
+      'read:pets': read your pets
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+definitions:
+  CreateKeyPairReq:
+    type: object
+    required:
+      - keypair
+    properties:
+      keypair:
+        $ref: '#/definitions/CreateKeyPairReqObject'
+  CreateKeyPairReqObject:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        description: A name for the keypair which will be used to reference it later.
+      public_key:
+        type: string
+        description: The public ssh key to import. If you omit this value, a keypair is generated for you.
+      type:
+        type: string
+        description: The type of the keypair.
+        enum:
+          - ssh
+           - x509
+      user_id:
+        type: string
+        description: The user_id for a keypair.
+  CreateKeyPairResp:
+    type: object
+    properties:
+      keypair:
+        $ref: '#/definitions/CreateKeyPairRespObject'
+  CreateKeyPairRespObject:
+    type: object
+    properties:
+      created_at:
+        type: string
+        format: date-time
+        description: The date and time when the resource was created.
+      deleted:
+        type: boolean
+        description: A boolean indicates whether this keypair is deleted or not.
+      fingerprint:
+        type: string
+        description: The fingerprint for the keypair.
+      id:
+        type: string
+        description: The keypair ID.
+      name:
+        type: string
+        description: A name for the keypair which will be used to reference it later.
+      public_key:
+        type: string
+        description: The keypair public key.
+      user_id:
+        type: string
+        description: The user_id for a keypair.
+      type:
+        type: string
+        description: The type of the keypair.
+  ListKeyPairResp:
+    type: object
+    properties:
+      keypairs:
+        type: array
+        items:
+          $ref: '#/definitions/ListKeyPairItem'
+      keypairs_links:
+        type: array
+        items:
+          $ref: '#/definitions/KeyPairLinkItem'
+  ListKeyPairItem:
+    type: object
+    properties:
+      keypair:
+        $ref: '#/definitions/ListKeyPairObject'
+  ListKeyPairObject:
+    type: object
+    properties:
+      name:
+        type: string
+        description: A name for the keypair which will be used to reference it later.
+      public_key:
+        type: string
+        description: The keypair public key.
+      fingerprint:
+        type: string
+        description: The fingerprint for the keypair.
+      type:
+        type: string
+        description: The type of the keypair.
+  KeyPairLinkItem:
+    type: object
+    properties:
+      href:
+        type: string
+      rel:
+        type: string
+  GetKeyPairResp:
+    type: object
+    properties:
+      keypair:
+        $ref: '#/definitions/GetKeyPairRespObject'
+  GetKeyPairRespObject:
+    type: object
+    properties:
+      created_at:
+        type: string
+        format: date-time
+        description: The date and time when the resource was created.
+      deleted:
+        type: boolean
+        description: A boolean indicates whether this keypair is deleted or not.
+      fingerprint:
+        type: string
+        description: The fingerprint for the keypair.
+      id:
+        type: string
+        description: The keypair ID.
+      name:
+        type: string
+        description: A name for the keypair which will be used to reference it later.
+      public_key:
+        type: string
+        description: The keypair public key.
+      user_id:
+        type: string
+        description: The user_id for a keypair.
+      type:
+        type: string
+        description: The type of the keypair.
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
+

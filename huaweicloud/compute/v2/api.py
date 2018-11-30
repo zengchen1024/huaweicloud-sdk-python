@@ -6,7 +6,7 @@ from six.moves.urllib.parse import quote
 
 from huaweicloud.common.exception import HuaweiCloudSDKException
 from huaweicloud.common import util
-from huaweicloud.compute.v1_0_0 import models
+from huaweicloud.compute.v2 import models
 
 
 class Api(object):

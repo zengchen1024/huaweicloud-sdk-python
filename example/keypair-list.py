@@ -7,37 +7,6 @@ from huaweipythonsdkcore import client
 from huaweicloud.compute.v2 import api
 from huaweicloud.compute.v2 import models
 
-
-def create_key_pair(api_client, keypair_name):
-    obj = models.CreateKeyPairReqObject()
-    obj.name = keypair_name
-    create_body = models.CreateKeyPairReq()
-    create_body.keypair = obj
-
-    print "\n** create_key_pair **\n"
-
-    try:
-        ret = api_client.create_key_pair(create_body)
-        for k, v in vars(ret.keypair).items():
-            print k, ": ", v
-    except Exception as err:
-        print(err)
-
-    print "\n** create_key_pair end **\n"
-
-
-def get_key_pair(api_client, keypair_name):
-    print "\n** get_key_pair **\n"
-    try:
-        ret = api_client.get_key_pair(keypair_name)
-        for k, v in vars(ret.keypair).items():
-            print k, ": ", v
-    except Exception as err:
-        print(err)
-
-    print "\n** get_key_pair end **\n"
-
-
 def list_key_pair(api_client):
     print "\n** list_key_pair **\n"
     try:
@@ -60,15 +29,6 @@ def list_key_pair(api_client):
 
     print "\n** list_key_pair end **\n"
 
-
-def delete_key_pair(api_client, keypair_name):
-    try:
-        api_client.delete_key_pair(keypair_name)
-    except Exception as err:
-        print(err)
-    print "\n** delete_key_pair end **\n"
-
-
 if __name__ == "__main__":
 
     # Initialize the client
@@ -84,12 +44,4 @@ if __name__ == "__main__":
 
     api_client = api.Api(demo_client)
 
-    keypair_name = "keypair-test"
-
-    create_key_pair(api_client, keypair_name)
-
-    get_key_pair(api_client, keypair_name)
-
     list_key_pair(api_client)
-
-    delete_key_pair(api_client, keypair_name)
